@@ -123,6 +123,7 @@ Add activity to a day
 Delete activity
 
 ⚙️ Installation & Setup
+
 1️⃣ Clone the Repository
 git clone https://github.com/your-username/smart-travel-itinerary-planner.git
 cd smart-travel-itinerary-planner
