@@ -21,6 +21,8 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/trips", require("./routes/trips"));
 app.use("/api/activities", require("./routes/activities"));
+app.use("/api/profile", require("./routes/profile"));
+app.use("/api/days", require("./routes/days"));
 
 // Basic route
 app.get("/", (req, res) => {

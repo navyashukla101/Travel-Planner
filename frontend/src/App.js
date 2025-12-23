@@ -9,9 +9,11 @@ import { AuthProvider, AuthContext } from "./context/AuthContext";
 import Navbar from "./components/Layout/Navbar";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
+import Dashboard from "./components/Dashboard";
 import TripList from "./components/Trip/TripList";
 import TripForm from "./components/Trip/TripForm";
 import TripDetail from "./components/Trip/TripDetail";
+import Profile from "./components/Profile/Profile";
 import "./App.css";
 
 function PrivateRoute({ children }) {
@@ -37,7 +39,23 @@ function App() {
               path="/"
               element={
                 <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/trips"
+              element={
+                <PrivateRoute>
                   <TripList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-trip"
+              element={
+                <PrivateRoute>
+                  <TripForm />
                 </PrivateRoute>
               }
             />
@@ -54,6 +72,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <TripDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
                 </PrivateRoute>
               }
             />

@@ -7,10 +7,14 @@ const tripSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    destination: {
-      type: String,
-      required: true,
-    },
+    // support multiple destinations
+    destinations: [
+      {
+        name: { type: String, required: true },
+        locationHint: { type: String },
+      },
+    ],
+    title: { type: String },
     startDate: {
       type: Date,
       required: true,
@@ -19,6 +23,21 @@ const tripSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    // trip management fields
+    status: {
+      type: String,
+      enum: ["active", "past"],
+      default: "active",
+    },
+    archived: { type: Boolean, default: false },
+    totalBudget: { type: Number, default: 0 },
+    collaborators: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        email: { type: String },
+        permission: { type: String, enum: ["view", "edit"], default: "view" },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -15,7 +15,13 @@ function Navbar() {
         <div style={styles.menu}>
           {user ? (
             <>
-              <span style={styles.userName}>Hello, {user.name}</span>
+              <Link to="/" style={styles.link}>
+                Dashboard
+              </Link>
+              <Link to="/profile" style={styles.link}>
+                Profile
+              </Link>
+              <span style={styles.userName}>{user.name}</span>
               <button onClick={logout} style={styles.logoutBtn}>
                 Logout
               </button>

@@ -28,7 +28,10 @@ router.get("/:id", auth, async (req, res) => {
 
     const daysWithActivities = await Promise.all(
       days.map(async (day) => {
-        const activities = await Activity.find({ day: day._id });
+        const activities = await Activity.find({ day: day._id }).sort({
+          order: 1,
+          createdAt: 1,
+        });
         return {
           ...day.toObject(),
           activities,
@@ -48,7 +51,14 @@ router.get("/:id", auth, async (req, res) => {
 // Create trip
 router.post("/", auth, async (req, res) => {
   try {
-    const { destination, startDate, endDate } = req.body;
+    const {
+      destination,
+      destinations,
+      title,
+      startDate,
+      endDate,
+      totalBudget,
+    } = req.body;
 
     // Validation
     if (new Date(startDate) > new Date(endDate)) {
@@ -60,9 +70,18 @@ router.post("/", auth, async (req, res) => {
     // Create trip
     const trip = new Trip({
       user: req.userId,
-      destination,
+      title:
+        title ||
+        destination ||
+        (destinations && destinations[0] && destinations[0].name) ||
+        "",
+      destinations:
+        destinations && destinations.length
+          ? destinations
+          : [{ name: destination }],
       startDate,
       endDate,
+      totalBudget: totalBudget || 0,
     });
 
     await trip.save();
@@ -91,6 +110,38 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+// Edit trip
+router.put("/:id", auth, async (req, res) => {
+  try {
+    const updates = req.body;
+    const trip = await Trip.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      updates,
+      { new: true, runValidators: true }
+    );
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Archive / unarchive trip
+router.patch("/:id/archive", auth, async (req, res) => {
+  try {
+    const { archived } = req.body;
+    const trip = await Trip.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      { archived: !!archived },
+      { new: true }
+    );
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 // Delete trip
 router.delete("/:id", auth, async (req, res) => {
   try {
@@ -109,6 +160,41 @@ router.delete("/:id", auth, async (req, res) => {
     await Trip.findByIdAndDelete(trip._id);
 
     res.json({ message: "Trip deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Manage collaborators
+router.patch("/:id/collaborators", auth, async (req, res) => {
+  try {
+    const { action, email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email required" });
+    }
+
+    const trip = await Trip.findOne({ _id: req.params.id, user: req.userId });
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    if (action === "add") {
+      // Check if already exists
+      if (!trip.collaborators) trip.collaborators = [];
+      if (!trip.collaborators.find((c) => c.email === email)) {
+        trip.collaborators.push({ email, role: "viewer" });
+        await trip.save();
+      }
+    } else if (action === "remove") {
+      if (trip.collaborators) {
+        trip.collaborators = trip.collaborators.filter(
+          (c) => c.email !== email
+        );
+        await trip.save();
+      }
+    }
+
+    res.json(trip);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

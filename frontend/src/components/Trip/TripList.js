@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import API from '../../utils/api';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import API from "../../utils/api";
 
 function TripList() {
   const [trips, setTrips] = useState([]);
+  const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,31 +13,31 @@ function TripList() {
 
   const fetchTrips = async () => {
     try {
-      const response = await API.get('/trips');
+      const response = await API.get("/trips");
       setTrips(response.data);
     } catch (error) {
-      console.error('Error fetching trips:', error);
+      console.error("Error fetching trips:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const deleteTrip = async (id) => {
-    if (window.confirm('Are you sure you want to delete this trip?')) {
+    if (window.confirm("Are you sure you want to delete this trip?")) {
       try {
         await API.delete(`/trips/${id}`);
-        setTrips(trips.filter(trip => trip._id !== id));
+        setTrips(trips.filter((trip) => trip._id !== id));
       } catch (error) {
-        console.error('Error deleting trip:', error);
+        console.error("Error deleting trip:", error);
       }
     }
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -53,31 +54,66 @@ function TripList() {
         </Link>
       </div>
 
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <button
+          onClick={() => setFilter("all")}
+          style={filter === "all" ? styles.filterActive : styles.filterBtn}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setFilter("active")}
+          style={filter === "active" ? styles.filterActive : styles.filterBtn}
+        >
+          Active
+        </button>
+        <button
+          onClick={() => setFilter("past")}
+          style={filter === "past" ? styles.filterActive : styles.filterBtn}
+        >
+          Past
+        </button>
+      </div>
+
       {trips.length === 0 ? (
         <div style={styles.empty}>
           <p>No trips yet. Create your first trip!</p>
         </div>
       ) : (
         <div style={styles.grid}>
-          {trips.map((trip) => (
-            <div key={trip._id} style={styles.card}>
-              <h3 style={styles.destination}>{trip.destination}</h3>
-              <p style={styles.dates}>
-                {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-              </p>
-              <div style={styles.actions}>
-                <Link to={`/trips/${trip._id}`} style={styles.viewBtn}>
-                  View Details
-                </Link>
-                <button
-                  onClick={() => deleteTrip(trip._id)}
-                  style={styles.deleteBtn}
-                >
-                  Delete
-                </button>
+          {trips
+            .filter((t) => {
+              if (filter === "all") return true;
+              return (t.status || (t.archived ? "past" : "active")) === filter;
+            })
+            .map((trip) => (
+              <div key={trip._id} style={styles.card}>
+                <h3 style={styles.destination}>
+                  {trip.title ||
+                    (trip.destinations &&
+                      trip.destinations[0] &&
+                      trip.destinations[0].name) ||
+                    trip.destination}
+                </h3>
+                <p style={styles.dates}>
+                  {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                </p>
+                <p style={{ color: "#374151", marginTop: 6 }}>
+                  <strong>Budget:</strong> ${trip.totalBudget || 0}
+                </p>
+                <div style={styles.actions}>
+                  <Link to={`/trips/${trip._id}`} style={styles.viewBtn}>
+                    View Details
+                  </Link>
+                  <button
+                    onClick={() => deleteTrip(trip._id)}
+                    style={styles.deleteBtn}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
@@ -124,6 +160,21 @@ const styles = {
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     border: "1px solid #e5e7eb",
+  },
+  filterBtn: {
+    backgroundColor: "white",
+    border: "1px solid #e5e7eb",
+    padding: "0.4rem 0.8rem",
+    borderRadius: 6,
+    cursor: "pointer",
+  },
+  filterActive: {
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "1px solid #2563eb",
+    padding: "0.4rem 0.8rem",
+    borderRadius: 6,
+    cursor: "pointer",
   },
   destination: {
     color: "#1f2937",

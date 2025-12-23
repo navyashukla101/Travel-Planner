@@ -17,6 +17,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // Profile fields
+    travelStyle: {
+      type: String,
+      enum: ["relaxed", "packed", "adventure"],
+      default: "relaxed",
+    },
+    budgetPreference: {
+      // e.g. "low", "medium", "high" or numeric baseline
+      type: String,
+      default: "medium",
+    },
+    profileNotes: {
+      type: String,
+      default: "",
+    },
+    // Preferences persisted across trips
+    preferences: {
+      type: Object,
+      default: {},
+    },
   },
   { timestamps: true }
 );
