@@ -54,22 +54,24 @@ function TripList() {
         </Link>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+      <div style={styles.filterRow}>
         <button
           onClick={() => setFilter("all")}
-          style={filter === "all" ? styles.filterActive : styles.filterBtn}
+          style={filter === "all" ? styles.filterBtnActive : styles.filterBtn}
         >
           All
         </button>
         <button
           onClick={() => setFilter("active")}
-          style={filter === "active" ? styles.filterActive : styles.filterBtn}
+          style={
+            filter === "active" ? styles.filterBtnActive : styles.filterBtn
+          }
         >
           Active
         </button>
         <button
           onClick={() => setFilter("past")}
-          style={filter === "past" ? styles.filterActive : styles.filterBtn}
+          style={filter === "past" ? styles.filterBtnActive : styles.filterBtn}
         >
           Past
         </button>
@@ -122,92 +124,123 @@ function TripList() {
 
 const styles = {
   container: {
-    maxWidth: "1200px",
+    maxWidth: "1400px",
     margin: "0 auto",
-    padding: "2rem",
+    padding: "3rem 1.5rem",
+    minHeight: "calc(100vh - 70px)",
+    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "2rem",
+    marginBottom: "3rem",
   },
   title: {
-    color: "#1f2937",
-    fontSize: "2rem",
+    color: "#1a202c",
+    fontSize: "2.5rem",
+    fontWeight: "700",
+    margin: 0,
   },
   createBtn: {
-    backgroundColor: "#10b981",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     color: "white",
-    padding: "0.75rem 1.5rem",
-    borderRadius: "4px",
-    textDecoration: "none",
-    fontWeight: "500",
-  },
-  empty: {
-    textAlign: "center",
-    padding: "3rem",
-    color: "#6b7280",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "1.5rem",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "1.5rem",
+    padding: "0.875rem 1.75rem",
     borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    border: "1px solid #e5e7eb",
+    textDecoration: "none",
+    fontWeight: "700",
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.3)",
+    transition: "all 0.3s ease",
+    display: "inline-block",
+  },
+  filterRow: {
+    display: "flex",
+    gap: "0.75rem",
+    marginBottom: "2rem",
+    flexWrap: "wrap",
   },
   filterBtn: {
     backgroundColor: "white",
-    border: "1px solid #e5e7eb",
-    padding: "0.4rem 0.8rem",
-    borderRadius: 6,
+    color: "#4a5568",
+    border: "1.5px solid #e2e8f0",
+    padding: "0.65rem 1.25rem",
+    borderRadius: "8px",
     cursor: "pointer",
+    fontWeight: "600",
+    transition: "all 0.3s ease",
+    fontSize: "0.95rem",
   },
-  filterActive: {
-    backgroundColor: "#2563eb",
+  filterBtnActive: {
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     color: "white",
-    border: "1px solid #2563eb",
-    padding: "0.4rem 0.8rem",
-    borderRadius: 6,
+    border: "none",
+    padding: "0.65rem 1.25rem",
+    borderRadius: "8px",
     cursor: "pointer",
+    fontWeight: "600",
+    transition: "all 0.3s ease",
+    fontSize: "0.95rem",
+    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+  },
+  empty: {
+    textAlign: "center",
+    padding: "4rem 1rem",
+    background: "white",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+    color: "#718096",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+    gap: "2rem",
+  },
+  card: {
+    backgroundColor: "white",
+    padding: "2rem",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+    border: "1px solid rgba(0, 0, 0, 0.05)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   },
   destination: {
-    color: "#1f2937",
-    fontSize: "1.25rem",
-    marginBottom: "0.5rem",
+    color: "#1a202c",
+    fontSize: "1.35rem",
+    marginBottom: "0.75rem",
+    fontWeight: "700",
   },
   dates: {
-    color: "#6b7280",
+    color: "#718096",
     marginBottom: "1rem",
+    fontSize: "0.95rem",
   },
   actions: {
     display: "flex",
-    gap: "0.5rem",
+    gap: "0.75rem",
   },
   viewBtn: {
     flex: 1,
-    backgroundColor: "#2563eb",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     color: "white",
-    padding: "0.5rem",
-    borderRadius: "4px",
+    padding: "0.85rem",
+    borderRadius: "8px",
     textDecoration: "none",
     textAlign: "center",
-    fontSize: "0.875rem",
+    fontSize: "0.95rem",
+    fontWeight: "600",
+    transition: "all 0.3s ease",
   },
   deleteBtn: {
     flex: 1,
-    backgroundColor: "#ef4444",
-    color: "white",
-    padding: "0.5rem",
+    backgroundColor: "#fed7d7",
+    color: "#c53030",
+    padding: "0.85rem",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: "8px",
     cursor: "pointer",
-    fontSize: "0.875rem",
+    fontSize: "0.95rem",
+    fontWeight: "600",
+    transition: "all 0.3s ease",
   },
 };
 export default TripList;

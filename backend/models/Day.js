@@ -15,6 +15,14 @@ const daySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // day-level images/gallery
+    images: [
+      {
+        url: String,
+        caption: String,
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
     // day-level budget and notes
     dailyBudget: { type: Number, default: 0 },
     notes: { type: String, default: "" },

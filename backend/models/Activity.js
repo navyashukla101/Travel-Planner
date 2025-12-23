@@ -15,6 +15,14 @@ const activitySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    // Image support
+    images: [
+      {
+        url: String,
+        caption: String,
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
     // Time-based fields
     startTime: { type: Date },
     endTime: { type: Date },

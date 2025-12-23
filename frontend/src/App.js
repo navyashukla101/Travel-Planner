@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import Navbar from "./components/Layout/Navbar";
+import HomePage from "./components/HomePage";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import Dashboard from "./components/Dashboard";
@@ -33,10 +34,12 @@ function App() {
         <div className="App">
           <Navbar />
           <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route
-              path="/"
+              path="/dashboard"
               element={
                 <PrivateRoute>
                   <Dashboard />

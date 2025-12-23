@@ -12,6 +12,13 @@ const tripSchema = new mongoose.Schema(
       {
         name: { type: String, required: true },
         locationHint: { type: String },
+        images: [
+          {
+            url: String,
+            caption: String,
+            uploadedAt: { type: Date, default: Date.now },
+          },
+        ],
       },
     ],
     title: { type: String },
