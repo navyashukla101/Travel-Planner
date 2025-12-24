@@ -81,6 +81,31 @@ A comprehensive MERN stack web application for planning trips with advanced feat
 - **Completion Rate**: Track percentage of completed activities
 - **Budget Utilization**: Overall and per-day budget analysis
 - **Trip Cards**: Quick overview of each trip with key metrics
+- **Destination Gallery**: Auto-fetched images for each destination
+
+### 🤖 AI Travel Assistant (NEW)
+
+- **Context-Aware AI Chat**: Integrated AI assistant accessible from anywhere
+- **Natural Language Commands**: Add activities using plain English (e.g., "Add a museum visit on Day 1 at 11 AM")
+- **Smart Intent Detection**: Automatically recognizes user intent:
+  - **Add Activity**: Create activities by describing them in natural language
+  - **Suggest Activities**: Get personalized activity recommendations for specific days
+  - **Balance Trip**: Receive suggestions for better time/schedule distribution
+  - **Budget Analysis**: Identify optional activities to stay within budget
+  - **Travel Advice**: Answer general travel questions (packing tips, destination info, etc.)
+  - **City Suggestions**: Get place-to-visit recommendations for any destination
+  - **Trip Hours Calculation**: Analyze activity durations and free time
+- **Global Mode**: Ask general travel questions without needing a specific trip context
+- **Trip-Specific Mode**: Get recommendations tailored to your specific trip when viewing a trip
+- **Real-time Feedback**: Friendly confirmation messages when activities are created
+
+### 🖼️ Destination Image Gallery
+
+- **Automatic Image Fetching**: Images are automatically fetched from Unsplash/Pixabay based on destination names
+- **Fallback Mechanism**: Hand-curated images for popular destinations, with fallback to generic travel photos
+- **Trip Overview Display**: Beautiful gallery view showing images for all trip destinations
+- **API Caching**: Efficient caching to avoid redundant API calls
+- **Error Handling**: Graceful degradation if images can't be fetched
 
 ## 🏗️ Project Structure
 
@@ -100,7 +125,12 @@ backend/
 │   ├── trips.js           # Trip CRUD + archive + collaborators
 │   ├── activities.js      # Activity CRUD + move + reorder + overlap detection
 │   ├── days.js            # Day update (notes, checklist, budget)
-│   └── profile.js         # Profile get/update
+│   ├── ai.js              # AI intent detection & routing (NEW)
+│   ├── images.js          # Image fetching endpoint (NEW)
+│   ├── profile.js         # Profile get/update
+├── services/
+│   ├── aiService.js       # AI logic & intent handlers (NEW)
+│   └── imageService.js    # Image fetching from Unsplash/Pixabay (NEW)
 ├── server.js              # Express server entry point
 └── package.json
 
@@ -113,24 +143,25 @@ frontend/
 │   │   │   ├── Login.js
 │   │   │   └── Signup.js
 │   │   ├── Layout/
-│   │   │   └── Navbar.js  # Navigation with Dashboard + Profile links
+│   │   │   └── Navbar.js  # Navigation with AI Assistant button (UPDATED)
 │   │   ├── Trip/
 │   │   │   ├── Dashboard.js           # Trip overview & statistics
 │   │   │   ├── TripList.js            # List trips with filters
 │   │   │   ├── TripForm.js            # Create new trip
-│   │   │   ├── TripDetail.js          # Trip detail with days/activities
+│   │   │   ├── TripDetail.js          # Trip detail with days/activities + AI Chat
 │   │   │   ├── TripEditModal.js       # Edit trip (title, destinations, budget)
-│   │   │   ├── TripOverview.js        # Analytics & stats display
+│   │   │   ├── TripOverview.js        # Analytics & destination gallery (UPDATED)
 │   │   │   ├── TripShareModal.js      # Manage collaborators
 │   │   │   ├── ActivityDetailModal.js # Edit activity (time, type, cost, etc.)
 │   │   │   └── ActivityTimeline.js    # Visual timeline display
 │   │   ├── Profile/
 │   │   │   └── Profile.js            # User profile page
+│   │   ├── AIChat.js                 # AI Assistant component (NEW)
 │   │   └── Dashboard.js              # Main dashboard landing page
 │   ├── context/
 │   │   └── AuthContext.js            # Global auth state
 │   ├── utils/
-│   │   └── api.js                    # API helpers (axios)
+│   │   └── api.js                    # API helpers (axios) + image search (UPDATED)
 │   ├── App.js                        # Main app component with routes
 │   ├── App.css                       # Global styles
 │   └── index.js                      # React entry point
@@ -171,6 +202,16 @@ frontend/
 - `PATCH /api/activities/:id/move` - Move activity to different day
 - `PATCH /api/activities/:id/reorder` - Reorder activity within day
 - `DELETE /api/activities/:id` - Delete activity
+
+### AI Assistant
+
+- `POST /api/ai/query` - Process natural language queries and AI requests
+  - Body: `{ tripId (optional), message (required), budgetLimit (optional) }`
+  - Returns: Intent-based responses with suggestions, recommendations, or activity creation results
+
+### Images
+
+- `GET /api/images/search?query=<destination>` - Fetch destination images from Unsplash/Pixabay (NEW)
 
 ## 💾 Database Schema
 
@@ -256,6 +297,9 @@ frontend/
 - ✅ Budget tracking with visual progress bars
 - ✅ Day notes and checklist management
 - ✅ Collaborator management UI
+- ✅ **AI Travel Assistant with natural language processing** (NEW)
+- ✅ **Destination image gallery with auto-fetching** (NEW)
+- ✅ **Global AI chat for general travel queries** (NEW)
 
 ### Backend
 
@@ -267,6 +311,9 @@ frontend/
 - ✅ Cascading delete (trip deletes days and activities)
 - ✅ Activity reordering and moving
 - ✅ Collaborator endpoint
+- ✅ **AI intent detection and natural language processing** (NEW)
+- ✅ **Multi-source image fetching (Unsplash/Pixabay)** (NEW)
+- ✅ **Result caching for performance optimization** (NEW)
 
 ## 🚀 Getting Started
 
@@ -286,6 +333,8 @@ npm install
 # DATABASE_URL=<your-mongodb-url>
 # JWT_SECRET=<your-secret-key>
 # PORT=5000
+# UNSPLASH_KEY=<optional-unsplash-api-key>  # For better destination images
+# PIXABAY_KEY=<optional-pixabay-api-key>    # For image fallback
 npm start
 ```
 
@@ -311,11 +360,41 @@ The application will be running at `http://localhost:3000`
 
 1. **Create an Account**: Sign up with email and password
 2. **Create a Trip**: Click "New Trip" to start planning
-3. **Plan Activities**: Add activities with time, cost, and other details
+3. **Plan Activities**:
+   - Add activities manually with time, cost, and other details
+   - **Use AI Assistant**: Type natural language like "Add a museum visit on Day 2 at 3 PM" to create activities instantly
 4. **Track Budget**: Monitor daily and trip-wide spending
 5. **Share Trips**: Invite collaborators via email
-6. **View Analytics**: Check statistics on the dashboard
+6. **View Analytics**: Check statistics and destination images on the dashboard
 7. **Manage Schedule**: Use timeline view to optimize your schedule
+8. **Get Travel Advice**: Click the 🤖 button in the navbar to ask general travel questions (packing, destination tips, etc.)
+
+## 🤖 AI Assistant Features
+
+### Trip-Specific Queries (when viewing a trip)
+
+```
+"Add a cafe visit on day 2"
+"Suggest activities for day 1"
+"Reduce cost for this trip"
+"Is my trip too packed?"
+```
+
+### General Travel Queries (from navbar)
+
+```
+"What should I pack for a beach vacation?"
+"Things to do in Paris"
+"Budget tips for traveling"
+"Best time to visit Japan"
+```
+
+The AI automatically:
+
+- Detects the day number from your message
+- Extracts activity details (title, time if mentioned)
+- Creates activities with smart defaults
+- Provides friendly feedback and recommendations
 
 ## 🛠️ Tech Stack
 
@@ -325,6 +404,8 @@ The application will be running at `http://localhost:3000`
 - MongoDB + Mongoose
 - JWT authentication
 - CORS enabled
+- **Unsplash & Pixabay APIs for image fetching** (NEW)
+- **Regex-based NLP for intent detection** (NEW)
 
 **Frontend**
 
@@ -332,131 +413,8 @@ The application will be running at `http://localhost:3000`
 - React Router v6
 - Axios for API calls
 - CSS-in-JS styling
+- **AI Chat Interface** (NEW)
 
 ## 📄 License
 
 This project is open source and available under the MIT License.
-
-Activities are displayed under their respective day
-
-🎨 UI (Simple & Clean)
-
-Trip dashboard
-
-Day-wise itinerary view
-
-Basic forms and buttons
-
-Focus on clarity and usability over advanced UI
-
-🛠 Tech Stack
-
-Frontend
-
-React
-
-Context API / basic state management
-
-React Router
-
-Backend
-
-Node.js
-
-Express.js
-
-JWT Authentication
-
-Database
-
-MongoDB
-
-Mongoose ODM
-
-📂 Database Models
-
-User
-
-Trip
-
-Day
-
-Activity
-
-Designed to demonstrate schema relationships and data modeling in MongoDB.
-
-🔗 API Structure (Overview)
-
-/api/auth
-
-Register
-
-Login
-
-/api/trips
-
-Create trip
-
-Get user trips
-
-Delete trip
-
-/api/days
-
-Auto-generated based on trip dates
-
-/api/activities
-
-Add activity to a day
-
-Delete activity
-
-⚙️ Installation & Setup
-
-1️⃣ Clone the Repository
-git clone https://github.com/your-username/smart-travel-itinerary-planner.git
-cd smart-travel-itinerary-planner
-
-2️⃣ Backend Setup
-cd backend
-npm install
-
-Create a .env file:
-
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-
-Run backend:
-
-npm start
-
-3️⃣ Frontend Setup
-cd frontend
-npm install
-npm start
-
-🎯 Project Goals
-
-Demonstrate MERN stack fundamentals
-
-Practice REST API design
-
-Understand JWT authentication
-
-Implement MongoDB schema relationships
-
-Build a realistic, meaningful CRUD application
-
-🚧 Planned Future Enhancements
-
-Edit trips & activities
-
-Multiple destinations per trip
-
-AI-powered itinerary suggestions
-
-Activity time slots
-
-Drag-and-drop reordering
-
-Budget & collaboration features
