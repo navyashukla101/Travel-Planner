@@ -1,6 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import API from "../../utils/api";
 
 function TripOverview({ trip }) {
+  const [destinationsWithImages, setDestinationsWithImages] = useState(
+    trip.destinations || []
+  );
+  const [loading, setLoading] = useState(true);
+
+  // Fetch images for destinations on mount or when trip changes
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (!trip.destinations || trip.destinations.length === 0) {
+        setDestinationsWithImages([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const updated = await Promise.all(
+          trip.destinations.map(async (dest) => {
+            // If destination already has images, return as-is
+            if (dest.images && dest.images.length > 0) {
+              return dest;
+            }
+
+            // Fetch images from API
+            try {
+              console.log(`Fetching images for ${dest.name}...`);
+              const res = await API.get(
+                `/images/search?query=${encodeURIComponent(dest.name)}`
+              );
+              const imageData = res.data;
+              console.log(`Got response for ${dest.name}:`, imageData);
+
+              if (
+                imageData &&
+                imageData.images &&
+                imageData.images.length > 0
+              ) {
+                const updatedDest = {
+                  ...dest,
+                  images: imageData.images.map((img) => ({
+                    url: img.url,
+                    caption: img.caption || dest.name,
+                  })),
+                };
+                console.log(
+                  `Updated ${dest.name} with ${imageData.images.length} images`
+                );
+                return updatedDest;
+              }
+            } catch (err) {
+              console.error(`Failed to fetch images for ${dest.name}:`, err);
+            }
+
+            return dest;
+          })
+        );
+
+        console.log("Final destinations with images:", updated);
+        setDestinationsWithImages(updated);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, [trip]);
+
   // Calculate stats
   const totalDays = trip.days ? trip.days.length : 0;
   const totalActivities = trip.days
@@ -57,21 +124,67 @@ function TripOverview({ trip }) {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Trip Overview & Analytics</h2>
+      <div style={styles.header}>
+        <h2 style={styles.title}>✈️ Trip Overview & Analytics</h2>
+      </div>
 
+      {/* Destination Gallery */}
+      {destinationsWithImages && destinationsWithImages.length > 0 && (
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>🌍 Destinations</h3>
+          <div style={styles.destinationGallery}>
+            {destinationsWithImages.map((dest, idx) => (
+              <div key={idx} style={styles.destinationCard}>
+                {dest.images && dest.images.length > 0 ? (
+                  <img
+                    src={dest.images[0].url}
+                    alt={dest.name}
+                    style={styles.destinationImage}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                      e.target.nextElementSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  style={{
+                    ...styles.destinationImagePlaceholder,
+                    display:
+                      dest.images && dest.images.length > 0 ? "none" : "flex",
+                  }}
+                >
+                  📸
+                </div>
+                <div style={styles.destinationInfo}>
+                  <div style={styles.destinationName}>{dest.name}</div>
+                  {dest.locationHint && (
+                    <div style={styles.destinationHint}>
+                      {dest.locationHint}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Summary Cards */}
       <div style={styles.grid}>
-        {/* Summary Cards */}
         <div style={styles.card}>
+          <div style={styles.cardIcon}>📅</div>
           <div style={styles.cardLabel}>Days</div>
           <div style={styles.cardValue}>{totalDays}</div>
         </div>
 
         <div style={styles.card}>
+          <div style={styles.cardIcon}>🎯</div>
           <div style={styles.cardLabel}>Activities</div>
           <div style={styles.cardValue}>{totalActivities}</div>
         </div>
 
         <div style={styles.card}>
+          <div style={styles.cardIcon}>✅</div>
           <div style={styles.cardLabel}>Completed</div>
           <div style={styles.cardValue}>{completionRate}%</div>
           <div style={styles.cardSubtitle}>
@@ -80,6 +193,7 @@ function TripOverview({ trip }) {
         </div>
 
         <div style={styles.card}>
+          <div style={styles.cardIcon}>📍</div>
           <div style={styles.cardLabel}>Destinations</div>
           <div style={styles.cardValue}>
             {trip.destinations ? trip.destinations.length : 0}
@@ -204,79 +318,139 @@ function TripOverview({ trip }) {
 
 const styles = {
   container: {
-    padding: "1.5rem",
-    backgroundColor: "#f9fafb",
-    borderRadius: "8px",
+    padding: "2rem",
+    backgroundColor: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+    borderRadius: "12px",
+    marginBottom: "2rem",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+  },
+  header: {
     marginBottom: "2rem",
   },
   title: {
-    color: "#1f2937",
-    fontSize: "1.5rem",
-    marginBottom: "1.5rem",
+    color: "#0f172a",
+    fontSize: "1.875rem",
+    fontWeight: "700",
+    margin: 0,
+    letterSpacing: "-0.5px",
+  },
+  section: {
+    marginBottom: "2rem",
+  },
+  sectionTitle: {
+    color: "#0f172a",
+    fontSize: "1.125rem",
+    fontWeight: "700",
+    marginBottom: "1rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  },
+  destinationGallery: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "1rem",
+    marginBottom: "2rem",
+  },
+  destinationCard: {
+    backgroundColor: "white",
+    borderRadius: "10px",
+    overflow: "hidden",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    transition: "all 0.3s ease",
+    cursor: "pointer",
+  },
+  destinationImage: {
+    width: "100%",
+    height: "180px",
+    objectFit: "cover",
+  },
+  destinationImagePlaceholder: {
+    width: "100%",
+    height: "180px",
+    background: "linear-gradient(135deg, #e0f2fe, #f0f9ff)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "3rem",
+  },
+  destinationInfo: {
+    padding: "1rem",
+  },
+  destinationName: {
+    fontWeight: "700",
+    color: "#0f172a",
+    fontSize: "1rem",
+    marginBottom: "0.25rem",
+  },
+  destinationHint: {
+    color: "#64748b",
+    fontSize: "0.875rem",
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-    gap: "1rem",
+    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+    gap: "1.25rem",
     marginBottom: "2rem",
   },
   card: {
     backgroundColor: "white",
-    padding: "1.25rem",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+    padding: "1.5rem",
+    borderRadius: "10px",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
     textAlign: "center",
+    transition: "all 0.3s ease",
   },
-  cardLabel: {
-    color: "#6b7280",
-    fontSize: "0.875rem",
-    fontWeight: "500",
+  cardIcon: {
+    fontSize: "2rem",
     marginBottom: "0.5rem",
   },
+  cardLabel: {
+    color: "#64748b",
+    fontSize: "0.875rem",
+    fontWeight: "600",
+    marginBottom: "0.5rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+  },
   cardValue: {
-    color: "#1f2937",
-    fontSize: "2rem",
-    fontWeight: "bold",
+    color: "#0f172a",
+    fontSize: "2.25rem",
+    fontWeight: "800",
   },
   cardSubtitle: {
-    color: "#9ca3af",
+    color: "#94a3b8",
     fontSize: "0.75rem",
     marginTop: "0.5rem",
   },
-  section: {
-    marginBottom: "1.5rem",
-  },
-  sectionTitle: {
-    color: "#1f2937",
-    fontSize: "1.125rem",
-    fontWeight: "600",
-    marginBottom: "1rem",
-  },
   budgetCard: {
     backgroundColor: "white",
-    padding: "1.25rem",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
+    padding: "1.5rem",
+    borderRadius: "10px",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
   },
   budgetRow: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "0.75rem 0",
-    borderBottom: "1px solid #e5e7eb",
-    color: "#374151",
+    padding: "0.875rem 0",
+    borderBottom: "1px solid #e2e8f0",
+    color: "#475569",
+    fontSize: "0.95rem",
   },
   budgetValue: {
-    fontWeight: "600",
-    color: "#1f2937",
+    fontWeight: "700",
+    color: "#0f172a",
   },
   progressContainer: {
-    marginTop: "1rem",
+    marginTop: "1.25rem",
   },
   budgetPercentText: {
-    color: "#6b7280",
+    color: "#64748b",
     fontSize: "0.875rem",
     marginTop: "0.5rem",
+    fontWeight: "600",
   },
   typeList: {
     display: "flex",
@@ -285,30 +459,33 @@ const styles = {
   },
   typeItem: {
     backgroundColor: "white",
-    padding: "1rem",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
+    padding: "1.25rem",
+    borderRadius: "10px",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
   },
   typeName: {
-    fontWeight: "600",
-    color: "#1f2937",
-    marginBottom: "0.5rem",
+    fontWeight: "700",
+    color: "#0f172a",
+    marginBottom: "0.75rem",
+    fontSize: "0.95rem",
   },
   typeBar: {
     display: "flex",
     alignItems: "center",
-    gap: "0.5rem",
+    gap: "0.75rem",
   },
   typeBarFill: {
-    height: "8px",
-    background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
-    borderRadius: "4px",
+    height: "10px",
+    background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
+    borderRadius: "6px",
   },
   typeCount: {
-    color: "#6b7280",
+    color: "#64748b",
     fontSize: "0.875rem",
     minWidth: "30px",
     textAlign: "right",
+    fontWeight: "600",
   },
   dailyList: {
     display: "flex",
@@ -317,19 +494,20 @@ const styles = {
   },
   dailyItem: {
     backgroundColor: "white",
-    padding: "1rem",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
+    padding: "1.25rem",
+    borderRadius: "10px",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
   },
   dailyHeader: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: "0.5rem",
-    fontWeight: "500",
-    color: "#1f2937",
+    marginBottom: "0.75rem",
+    fontWeight: "700",
+    color: "#0f172a",
   },
   dayLabel: {
-    color: "#374151",
+    color: "#475569",
   },
   dailyBudgetBar: {
     display: "flex",
@@ -338,19 +516,20 @@ const styles = {
   },
   budgetBarBg: {
     flex: 1,
-    background: "#e5e7eb",
-    height: "8px",
-    borderRadius: "4px",
+    background: "#e2e8f0",
+    height: "10px",
+    borderRadius: "6px",
     overflow: "hidden",
   },
   budgetBarFill: {
     height: "100%",
   },
   budgetLabel: {
-    color: "#6b7280",
+    color: "#64748b",
     fontSize: "0.75rem",
-    minWidth: "45px",
+    minWidth: "50px",
     textAlign: "right",
+    fontWeight: "600",
   },
 };
 

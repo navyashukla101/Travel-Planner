@@ -5,6 +5,7 @@ import API, {
   archiveTrip,
   reorderActivity,
   updateActivity,
+  deleteActivity as apiDeleteActivity,
   moveActivity,
   updateDay,
 } from "../../utils/api";
@@ -13,6 +14,7 @@ import ActivityDetailModal from "./ActivityDetailModal";
 import ActivityTimeline from "./ActivityTimeline";
 import TripOverview from "./TripOverview";
 import TripShareModal from "./TripShareModal";
+import AIChat from "../AIChat";
 
 function TripDetail() {
   const { id } = useParams();
@@ -182,7 +184,7 @@ function TripDetail() {
   const deleteActivity = async (activityId) => {
     if (window.confirm("Delete this activity?")) {
       try {
-        await API.delete(`/activities/${activityId}`);
+        await apiDeleteActivity(activityId);
         fetchTrip();
       } catch (error) {
         console.error("Error deleting activity:", error);
@@ -359,6 +361,10 @@ function TripDetail() {
           }}
         />
       )}
+
+      <div style={{ marginBottom: 20 }}>
+        <AIChat tripId={trip._id} onActivityCreated={() => fetchTrip()} />
+      </div>
 
       <div style={styles.days}>
         {trip.days &&

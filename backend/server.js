@@ -23,6 +23,10 @@ app.use("/api/trips", require("./routes/trips"));
 app.use("/api/activities", require("./routes/activities"));
 app.use("/api/profile", require("./routes/profile"));
 app.use("/api/days", require("./routes/days"));
+// AI assistant route
+app.use("/api/ai", require("./routes/ai"));
+// Images route
+app.use("/api/images", require("./routes/images"));
 
 // Basic route
 app.get("/", (req, res) => {

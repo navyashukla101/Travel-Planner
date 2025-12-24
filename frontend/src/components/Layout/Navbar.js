@@ -1,9 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import AIChat from "../AIChat";
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const [showAI, setShowAI] = useState(false);
 
   return (
     <nav style={styles.nav}>
@@ -32,6 +34,13 @@ function Navbar() {
               <button onClick={logout} style={styles.logoutBtn}>
                 Logout
               </button>
+              <button
+                onClick={() => setShowAI((s) => !s)}
+                style={styles.aiBtn}
+                title="Open AI Assistant for general queries"
+              >
+                🤖
+              </button>
             </>
           ) : (
             <>
@@ -41,10 +50,30 @@ function Navbar() {
               <Link to="/signup" style={styles.signupLink}>
                 Get Started
               </Link>
+              {/* AI button removed for unauthenticated users */}
             </>
           )}
         </div>
       </div>
+
+      {user && showAI && (
+        <div style={styles.aiPanel} onClick={(e) => e.stopPropagation()}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <strong style={{ color: "#111" }}>AI Travel Assistant</strong>
+            <button onClick={() => setShowAI(false)} style={styles.closeBtn}>
+              ✖
+            </button>
+          </div>
+          <AIChat />
+        </div>
+      )}
     </nav>
   );
 }
@@ -126,6 +155,32 @@ const styles = {
     transition: "all 0.3s ease",
     fontSize: "0.95rem",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  },
+  aiBtn: {
+    background: "white",
+    border: "none",
+    padding: "0.45rem 0.65rem",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "1rem",
+  },
+  aiPanel: {
+    position: "fixed",
+    right: 20,
+    bottom: 20,
+    width: 360,
+    maxWidth: "calc(100% - 40px)",
+    background: "white",
+    padding: 12,
+    borderRadius: 12,
+    boxShadow: "0 8px 30px rgba(15, 23, 42, 0.2)",
+    zIndex: 2000,
+  },
+  closeBtn: {
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "1rem",
   },
 };
 

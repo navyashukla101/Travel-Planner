@@ -28,6 +28,7 @@ export const manageCollaborators = (id, action, email) =>
 
 // Activities
 export const updateActivity = (id, data) => API.put(`/activities/${id}`, data);
+export const deleteActivity = (id) => API.delete(`/activities/${id}`);
 export const moveActivity = (id, targetDayId) =>
   API.patch(`/activities/${id}/move`, { targetDayId });
 export const reorderActivity = (id, order) =>
@@ -35,3 +36,9 @@ export const reorderActivity = (id, order) =>
 
 // Days
 export const updateDay = (id, data) => API.put(`/days/${id}`, data);
+
+// AI assistant
+export const aiQuery = (payload) => API.post(`/ai/query`, payload);
+// Images
+export const imageSearch = (query) =>
+  API.get(`/images/search?query=${encodeURIComponent(query)}`);
