@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, UNSAFE_WithHydrateFallbackProps } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import AIChat from "../AIChat";
 
@@ -11,7 +11,7 @@ function Navbar() {
     <nav style={styles.nav}>
       <div style={styles.container}>
         <Link to={user ? "/dashboard" : "/"} style={styles.logo}>
-          <span style={styles.logoIcon}>✈️</span>
+          <img src="/assets/logo01.png" alt="Logo" style={styles.logoIcon} />{" "}
           <span style={styles.logoText}>Travel Planner</span>
         </Link>
 
@@ -39,7 +39,11 @@ function Navbar() {
                 style={styles.aiBtn}
                 title="Open AI Assistant for general queries"
               >
-                🤖
+                <img
+                  src="/assets/ailogo01.png"
+                  alt="AI Assistant"
+                  style={styles.aiIcon}
+                />
               </button>
             </>
           ) : (
@@ -80,38 +84,44 @@ function Navbar() {
 
 const styles = {
   nav: {
-    backgroundColor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    padding: "0.75rem 0",
-    boxShadow: "0 4px 20px rgba(102, 126, 234, 0.15)",
+    backgroundColor: "rgba(176, 156, 123, 1)",
+    padding: "0.5rem 0",
+    boxShadow: "0 1px 0 rgba(16,24,40,0.04)",
+    borderBottom: "3px solid #392e23ff",
     position: "sticky",
     top: 0,
+    marginBottom: "0.07rem",
     zIndex: 100,
   },
   container: {
-    maxWidth: "1400px",
+    maxWidth: "1600px",
     margin: "0 auto",
-    padding: "0 1.5rem",
+    padding: "0 1.2rem",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    height: "70px",
+    height: "50px",
   },
   logo: {
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
-    color: "white",
-    fontSize: "1.4rem",
+    color: "#111",
+    fontSize: "1.25rem",
     fontWeight: "700",
     textDecoration: "none",
-    transition: "opacity 0.3s ease",
+    transition: "opacity 0.8s ease",
   },
   logoIcon: {
-    fontSize: "1.8rem",
+    width: "120px",
+    height: "160px",
+    objectFit: "contain",
+    backgroundColor: "transparent",
   },
   logoText: {
     letterSpacing: "0.5px",
+    fontFamily: "'Playfair Display', serif",
+    color: "#111",
   },
   menu: {
     display: "flex",
@@ -119,58 +129,66 @@ const styles = {
     alignItems: "center",
   },
   userName: {
-    color: "white",
+    color: "#333",
     fontSize: "0.95rem",
     fontWeight: "500",
   },
   link: {
-    color: "white",
+    color: "#333",
     textDecoration: "none",
-    padding: "0.5rem 1rem",
+    padding: "0.4rem 0.8rem",
     borderRadius: "6px",
-    transition: "all 0.3s ease",
+    border: "2px solid #000000ff",
+    transition: "all 0.15s ease",
     fontSize: "0.95rem",
     fontWeight: "500",
   },
   signupLink: {
-    color: "white",
+    color: "#111",
     textDecoration: "none",
-    padding: "0.6rem 1.2rem",
-    borderRadius: "6px",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    border: "1.5px solid rgba(255, 255, 255, 0.5)",
-    transition: "all 0.3s ease",
+    padding: "0.5rem 1rem",
+    borderRadius: "8px",
+    backgroundColor: "transparent",
+    borderRadius: "8px",
+    border: "2px solid #000000ff",
+    transition: "all 0.15s ease",
     fontSize: "0.95rem",
-    fontWeight: "600",
+    fontWeight: "500",
     cursor: "pointer",
   },
   logoutBtn: {
-    backgroundColor: "white",
-    color: "#667eea",
-    border: "none",
-    padding: "0.6rem 1.2rem",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "600",
-    transition: "all 0.3s ease",
-    fontSize: "0.95rem",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-  },
-  aiBtn: {
-    background: "white",
-    border: "none",
-    padding: "0.45rem 0.65rem",
+    backgroundColor: "transparent",
+    color: "#111",
+    border: "1px solid #000000ff",
+    padding: "0.45rem 0.9rem",
     borderRadius: "8px",
     cursor: "pointer",
-    fontSize: "1rem",
+    fontWeight: "600",
+    transition: "all 0.15s ease",
+    fontSize: "0.9rem",
   },
+  aiBtn: {
+    background: "transparent",
+    border: "1px solid #000000ff",
+    padding: "0.11rem 0.55rem",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "0.5rem",
+  },
+  aiIcon: {
+    width: "30px",
+    height: "30px",
+    objectFit: "full",
+    pointerEvents: "none",
+  },
+
   aiPanel: {
     position: "fixed",
     right: 20,
     bottom: 20,
     width: 360,
     maxWidth: "calc(100% - 40px)",
-    background: "white",
+    background: "rgba(176, 156, 123, 1)",
     padding: 12,
     borderRadius: 12,
     boxShadow: "0 8px 30px rgba(15, 23, 42, 0.2)",

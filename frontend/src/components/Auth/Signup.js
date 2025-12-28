@@ -90,7 +90,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "url('/assets/background01.png') center/cover no-repeat",
     padding: "2rem",
   },
   card: {
@@ -132,7 +132,7 @@ const styles = {
     fontFamily: "inherit",
   },
   button: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "1rem",
     border: "none",
@@ -158,7 +158,7 @@ const styles = {
     color: "#718096",
   },
   link: {
-    color: "#667eea",
+    color: "#000000ff",
     textDecoration: "none",
     fontWeight: "600",
   },

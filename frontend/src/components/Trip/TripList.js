@@ -124,11 +124,12 @@ function TripList() {
 
 const styles = {
   container: {
-    maxWidth: "1400px",
-    margin: "0 auto",
+    width: "100%",
+    minHeight: "100vh",
+    margin: "0",
     padding: "3rem 1.5rem",
     minHeight: "calc(100vh - 70px)",
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+    background: "linear-gradient(135deg, #e0dccaff 0%, #fbf7f0ff 100%)",
   },
   header: {
     display: "flex",
@@ -143,7 +144,7 @@ const styles = {
     margin: 0,
   },
   createBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #eac766ff 0%, #a27e4bff 100%)",
     color: "white",
     padding: "0.875rem 1.75rem",
     borderRadius: "8px",
@@ -171,7 +172,7 @@ const styles = {
     fontSize: "0.95rem",
   },
   filterBtnActive: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     border: "none",
     padding: "0.65rem 1.25rem",
@@ -220,7 +221,7 @@ const styles = {
   },
   viewBtn: {
     flex: 1,
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "0.85rem",
     borderRadius: "8px",

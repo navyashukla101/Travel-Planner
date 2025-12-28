@@ -9,7 +9,7 @@ const Logo = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width="24" height="24" rx="6" fill="#4F46E5" />
+    <rect width="24" height="24" rx="6" fill="#0979eaff" />
     <path
       d="M6 15c3-1 6-1 9-2 1-0.5 2-1.5 3-2.5"
       stroke="#fff"
@@ -199,7 +199,7 @@ export default function AIChat({ tripId, onActivityCreated }) {
                   ))}
                 </ul>
               ) : h.response && h.response.message ? (
-                <div style={{ color: "#374151" }}>{h.response.message}</div>
+                <div style={{ color: "#bcb58bff" }}>{h.response.message}</div>
               ) : (
                 <pre
                   style={{
@@ -254,7 +254,7 @@ export default function AIChat({ tripId, onActivityCreated }) {
           disabled={loading}
           style={{
             padding: "8px 12px",
-            background: "#4F46E5",
+            background: "#22ca57ff",
             color: "white",
             border: "none",
             borderRadius: 8,

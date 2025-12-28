@@ -197,11 +197,12 @@ function Dashboard() {
 
 const styles = {
   container: {
-    maxWidth: "1400px",
-    margin: "0 auto",
+    width: "100%",
+    minHeight: "100vh",
+    margin: "0",
     padding: "3rem 1.5rem",
     minHeight: "calc(100vh - 70px)",
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+    background: "linear-gradient(135deg, #e0dccaff 0%, #fbf7f0ff 100%)",
   },
   header: {
     display: "flex",
@@ -217,7 +218,7 @@ const styles = {
     letterSpacing: "-0.5px",
   },
   newTripBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "0.875rem 1.75rem",
     border: "none",
@@ -252,7 +253,7 @@ const styles = {
     letterSpacing: "0.5px",
   },
   statValue: {
-    color: "#667eea",
+    color: "#4e2213ff",
     fontSize: "2.5rem",
     fontWeight: "700",
   },
@@ -274,7 +275,7 @@ const styles = {
     fontSize: "0.95rem",
   },
   filterBtnActive: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     borderColor: "transparent",
     boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
@@ -337,7 +338,7 @@ const styles = {
   },
   statBadge: {
     background: "linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%)",
-    color: "#1e40af",
+    color: "#af421eff",
     padding: "0.4rem 0.9rem",
     borderRadius: "20px",
     fontSize: "0.8rem",
@@ -349,7 +350,7 @@ const styles = {
   },
   viewBtn: {
     flex: 1,
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "0.85rem",
     border: "none",

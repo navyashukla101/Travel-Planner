@@ -163,7 +163,7 @@ const styles = {
     maxWidth: "900px",
     margin: "0 auto",
     padding: "3rem 1.5rem",
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+    background: "linear-gradient(135deg, #e0dccaff 0%, #fbf7f0ff 100%)",
     minHeight: "calc(100vh - 70px)",
   },
   header: {
@@ -246,7 +246,7 @@ const styles = {
     justifyContent: "flex-end",
   },
   saveBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e7da9bff 0%, #b9a453ff 100%)",
     color: "white",
     padding: "0.9rem 2rem",
     border: "none",

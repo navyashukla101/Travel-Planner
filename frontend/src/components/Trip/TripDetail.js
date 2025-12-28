@@ -667,17 +667,18 @@ function TripDetail() {
 
 const styles = {
   container: {
-    maxWidth: "1400px",
-    margin: "0 auto",
+    width: "100%",
+    minHeight: "100vh",
+    margin: "0",
     padding: "2rem 1.5rem",
     background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
     minHeight: "calc(100vh - 70px)",
   },
   backBtn: {
     backgroundColor: "white",
-    color: "#667eea",
+    color: "#957d15ff",
     padding: "0.65rem 1.25rem",
-    border: "1.5px solid #667eea",
+    border: "1.5px solid #000000ff",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
@@ -704,7 +705,7 @@ const styles = {
     marginTop: "0.5rem",
   },
   editBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "0.75rem 1.5rem",
     border: "none",
@@ -716,9 +717,9 @@ const styles = {
   },
   shareBtn: {
     backgroundColor: "white",
-    color: "#667eea",
+    color: "#2b1d07ff",
     padding: "0.75rem 1.5rem",
-    border: "1.5px solid #667eea",
+    border: "1.5px solid #000000ff",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
@@ -767,7 +768,7 @@ const styles = {
     margin: 0,
   },
   addBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e6b766ff 0%, #985d53ff 100%)",
     color: "white",
     padding: "0.65rem 1.25rem",
     border: "none",
@@ -836,7 +837,7 @@ const styles = {
     gap: "1rem",
   },
   editActivityBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #eac566ff 0%, #a26c4bff 100%)",
     color: "white",
     padding: "0.45rem 0.9rem",
     border: "none",

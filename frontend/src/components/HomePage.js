@@ -1,12 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 function HomePage() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  // The homepage now uses a video preview instead of a Three.js globe.
-  // Place your video at `public/videos/animation.mp4` (see QUICKSTART.md)
 
   const destinations = [
     {
@@ -34,11 +32,18 @@ function HomePage() {
     },
   ];
 
+  const pins = [
+    { top: "28%", left: "42%", color: "#CFA14A" },
+    { top: "36%", left: "62%", color: "#3F2B7A" },
+    { top: "56%", left: "24%", color: "#CFA14A" },
+  ];
+
   return (
     <div style={styles.container}>
       <div style={styles.content}>
+        {/* LEFT — untouched */}
         <div style={styles.leftSection}>
-          <h1 style={styles.mainTitle}>Explore the World</h1>
+          <h2 style={styles.mainTitle}>Explore the World</h2>
           <p style={styles.subtitle}>
             Plan your next adventure with ease. Discover amazing destinations
             and create unforgettable memories.
@@ -52,7 +57,7 @@ function HomePage() {
                   alt={dest.name}
                   style={styles.destImage}
                 />
-                <div style={styles.destOverlay}>
+                <div style={styles.destInfo}>
                   <h3 style={styles.destName}>{dest.name}</h3>
                   <p style={styles.destDescription}>{dest.description}</p>
                 </div>
@@ -88,13 +93,29 @@ function HomePage() {
           </div>
         </div>
 
+        {/* RIGHT — fixed */}
         <div style={styles.rightSection}>
-          <div style={styles.lottieContainer}>
+          <div style={styles.mapWrapper}>
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg"
+              src="/assets/worldmap01.png"
               alt="World map"
               style={styles.worldImage}
             />
+
+            {/* Fade towards content */}
+            <div style={styles.mapGradient} />
+
+            {pins.map((p, i) => (
+              <div
+                key={i}
+                style={{
+                  ...styles.pin,
+                  top: p.top,
+                  left: p.left,
+                  backgroundColor: p.color,
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -105,156 +126,132 @@ function HomePage() {
 const styles = {
   container: {
     minHeight: "calc(100vh - 70px)",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    padding: "0",
-    marginTop: "0",
+    background: "rgba(234, 226, 214, 1)",
   },
+
   content: {
     display: "flex",
-    maxWidth: "1400px",
+    maxWidth: "2000px",
     margin: "0 auto",
-    height: "calc(100vh - 70px)",
+    height: "calc(100vh - 40px)",
   },
+
   leftSection: {
-    flex: 1,
-    padding: "40px 40px",
+    flex: 3,
+    padding: "80px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    color: "white",
-    overflowY: "auto",
+    color: "#111",
+    overflowY: "hidden",
   },
+
+  /* ✅ FULL HEIGHT RIGHT SIDE */
   rightSection: {
-    flex: 1,
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 2,
+    padding: 0,
+    height: "100%",
   },
+
+  /* ✅ MAP FILLS RIGHT SIDE */
+  mapWrapper: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    overflow: "hidden", 
+  },
+
+  /* ✅ MAP FILLS ENTIRE AREA */
+  worldImage: {
+    position: "absolute",
+    inset: 0,
+    width: "110%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 1,
+  },
+
+  /* ✅ FADE TOWARDS LEFT (CONTENT SIDE) */
+  mapGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: "50%",
+    zIndex: 2,
+    pointerEvents: "none",
+    background:
+      "linear-gradient(to right, rgba(234,226,214,1) 0%, rgba(234,226,214,0.85) 25%, rgba(234,226,214,0) 100%)",
+  },
+
+
   mainTitle: {
-    fontSize: "3.5rem",
-    fontWeight: "700",
-    marginBottom: "1rem",
-    textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
+    fontSize: "2.0rem",
+    fontFamily: "'Playfair Display', serif",
+    color: "#291804ff",
+    
   },
+
   subtitle: {
-    fontSize: "1.3rem",
+    fontSize: "1.1rem",
     marginBottom: "2rem",
-    lineHeight: "1.6",
-    opacity: "0.95",
   },
+
   destinationsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "1rem",
     marginBottom: "2rem",
   },
+
   destCard: {
-    position: "relative",
-    borderRadius: "12px",
+    borderRadius: "20px",
     overflow: "hidden",
-    height: "150px",
-    cursor: "pointer",
-    transition: "transform 0.3s ease",
+    boxShadow: "0 12px 30px rgba(20,20,20,0.06)",
   },
+
   destImage: {
     width: "100%",
-    height: "100%",
+    height: "120px",
     objectFit: "cover",
   },
-  destOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    padding: "1rem",
-    transition: "background-color 0.3s ease",
+
+  destInfo: {
+    background: "white",
+    padding: "14px",
   },
+
   destName: {
-    margin: "0",
     fontSize: "0.95rem",
-    fontWeight: "600",
-    color: "white",
+    fontWeight: "700",
   },
+
   destDescription: {
-    margin: "0.25rem 0 0 0",
-    fontSize: "0.8rem",
-    color: "rgba(255,255,255,0.9)",
+    fontSize: "0.85rem",
+    color: "#555",
   },
+
   ctaButtons: {
     display: "flex",
     gap: "1rem",
   },
+
   primaryBtn: {
-    backgroundColor: "white",
-    color: "#667eea",
+    backgroundColor: "#111",
+    color: "white",
+    padding: "12px 28px",
+    borderRadius: "10px",
     border: "none",
-    padding: "12px 32px",
-    fontSize: "1rem",
-    fontWeight: "600",
-    borderRadius: "8px",
     cursor: "pointer",
-    transition: "all 0.3s ease",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
   },
+
   secondaryBtn: {
     backgroundColor: "transparent",
-    color: "white",
-    border: "2px solid white",
-    padding: "10px 30px",
-    fontSize: "1rem",
-    fontWeight: "600",
-    borderRadius: "8px",
+    color: "#111",
+    border: "1px solid #000000ff",
+    padding: "10px 20px",
+    borderRadius: "10px",
     cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  videoContainer: {
-    width: "100%",
-    height: "500px",
-    borderRadius: "20px",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-    overflow: "hidden",
-    background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  video: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
-  },
-  lottieContainer: {
-    width: "100%",
-    height: "500px",
-    borderRadius: "20px",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-    overflow: "hidden",
-    background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  worldImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
-    filter: "brightness(1.05) contrast(1.02)",
-  },
-  globeText: {
-    marginTop: "1rem",
-    textAlign: "center",
-    color: "white",
-    fontSize: "0.95rem",
-    opacity: "0.8",
   },
 };
 
